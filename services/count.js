@@ -1,9 +1,9 @@
 const config = require("config");
 const indexName = config.get("elasticsearch.index_name");
 
+// Compter le nombre d'anomalies entre deux dates
 exports.count = (client, from, to, callback) => {
-  // TODO Compter le nombre d'anomalies entre deux dates
-  const count = client
+  client
     .count({
       index: indexName,
       body: {
@@ -24,9 +24,33 @@ exports.count = (client, from, to, callback) => {
     );
 };
 
+// Compter le nombre d'anomalies autour d'un point géographique, dans un rayon donné
 exports.countAround = (client, lat, lon, radius, callback) => {
-  // TODO Compter le nombre d'anomalies autour d'un point géographique, dans un rayon donné
-  callback({
-    count: 0
-  });
+  client
+    .search({
+      index: indexName,
+      body: {
+        query: {
+          bool: {
+            must: {
+              match_all: {}
+            },
+            filter: {
+              geo_distance: {
+                distance: radius,
+                location: {
+                  lat: lat,
+                  lon: lon
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+    .then(resp => {
+      callback({
+        count: resp.body.hits.total.value
+      });
+    });
 };

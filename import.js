@@ -10,7 +10,20 @@ async function run() {
 
   // Création de l'indice
   client.indices.create({ index: indexName }, (err, resp) => {
-    if (err) console.trace(err.message);
+    if (err) {
+      console.trace(err.message);
+    } else {
+      client.indices.putMapping({
+        index: indexName,
+        body: {
+          properties: {
+            location: {
+              type: "geo_point"
+            }
+          }
+        }
+      });
+    }
   });
 
   // Read CSV file
@@ -40,10 +53,14 @@ async function run() {
       signalements.push(signalement);
     })
     .on("end", () => {
-      sendBulkInsertQuery(client, signalements).then(() => {
-        console.log("Tous les signalements insérés");
-        client.close();
-      });
+      sendBulkInsertQuery(client, signalements)
+        .catch(e => {
+          console.error(e);
+        })
+        .then(() => {
+          console.log("Tous les signalements insérés");
+          client.close();
+        });
     });
 }
 
@@ -59,7 +76,9 @@ async function sendBulkInsertQuery(client, signalements) {
       }
       console.log(
         `${
-          bulkResponse.items.length !== undefined ? bulkResponse.items.length : 0
+          bulkResponse.items.length !== undefined
+            ? bulkResponse.items.length
+            : 0
         } signalements insérés`
       );
       resolve();
@@ -84,7 +103,9 @@ function createBulkInsertQuery(signalements) {
       conseil_de_quartier,
       location
     } = signalement;
-    acc.push({ index: { _index: indexName, _type: "_doc", _id: signalement.object_id } });
+    acc.push({
+      index: { _index: indexName, _type: "_doc", _id: signalement.object_id }
+    });
     acc.push({
       timestamp,
       annee_declaration,
