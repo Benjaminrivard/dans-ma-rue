@@ -30,9 +30,47 @@ exports.statsByArrondissement = (client, callback) => {
     );
 };
 
+// Trouver le top 5 des types et sous types d'anomalies
 exports.statsByType = (client, callback) => {
-  // TODO Trouver le top 5 des types et sous types d'anomalies
-  callback([]);
+  client
+    .search({
+      index: indexName,
+      body: {
+        size: 0,
+        aggs: {
+          types: {
+            terms: {
+              field: "type.keyword",
+              size: 5
+            },
+            aggs: {
+              sous_types: {
+                terms: {
+                  field: "sous_type.keyword",
+                  size: 5
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+    .then(response =>
+      callback(
+        response.body.aggregations.types.buckets.map(t => {
+          return {
+            type: t.key,
+            count: t.doc_count,
+            sous_types: t.sous_types.buckets.map(st => {
+              return {
+                sous_type: st.key,
+                count: st.doc_count
+              };
+            })
+          };
+        })
+      )
+    );
 };
 
 exports.statsByMonth = (client, callback) => {
