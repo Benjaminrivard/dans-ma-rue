@@ -66,9 +66,33 @@ exports.statsByType = (client, callback) => {
     );
 };
 
+// Trouver le top 10 des mois avec le plus d'anomalies
 exports.statsByMonth = (client, callback) => {
-  // TODO Trouver le top 10 des mois avec le plus d'anomalies
-  callback([]);
+  client
+    .search({
+      index: indexName,
+      body: {
+        size: 0,
+        aggs: {
+          months: {
+            terms: {
+              field: "mois_annee_declaration.keyword",
+              size: 10
+            }
+          }
+        }
+      }
+    })
+    .then(response =>
+      callback(
+        response.body.aggregations.months.buckets.map(a => {
+          return {
+            month: a.key,
+            count: a.doc_count
+          };
+        })
+      )
+    );
 };
 
 // Trouver le top 3 des arrondissements avec le plus d'anomalies concernant la propreté

@@ -40,6 +40,7 @@ async function run() {
         object_id: data.OBJECTID,
         annee_declaration: data["ANNEE DECLARATION"],
         mois_declaration: data["MOIS DECLARATION"],
+        mois_annee_declaration: `${data["MOIS DECLARATION"]}/${data["ANNEE DECLARATION"]}`,
         type: data.TYPE,
         sous_type: data.SOUSTYPE,
         code_postal: data.CODE_POSTAL,
@@ -76,9 +77,7 @@ async function sendBulkInsertQuery(client, signalements) {
       }
       console.log(
         `${
-          bulkResponse.items.length !== undefined
-            ? bulkResponse.items.length
-            : 0
+          bulkResponse.items.length !== undefined ? bulkResponse.items.length : 0
         } signalements insérés`
       );
       resolve();
@@ -93,6 +92,7 @@ function createBulkInsertQuery(signalements) {
       timestamp,
       annee_declaration,
       mois_declaration,
+      mois_annee_declaration,
       type,
       sous_type,
       code_postal,
@@ -110,6 +110,7 @@ function createBulkInsertQuery(signalements) {
       timestamp,
       annee_declaration,
       mois_declaration,
+      mois_annee_declaration,
       type,
       sous_type,
       code_postal,
