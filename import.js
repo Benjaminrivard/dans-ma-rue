@@ -57,7 +57,11 @@ async function sendBulkInsertQuery(client, signalements) {
       if (bulkResponse.errors) {
         reject();
       }
-      console.log(`${bulkResponse.items.length} signalements insérés`);
+      console.log(
+        `${
+          bulkResponse.items.length !== undefined ? bulkResponse.items.length : 0
+        } signalements insérés`
+      );
       resolve();
     }
   });
