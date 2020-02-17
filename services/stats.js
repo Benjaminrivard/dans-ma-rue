@@ -19,8 +19,13 @@ exports.statsByArrondissement = (client, callback) => {
       }
     })
     .then(response =>
-      callback(response.body.aggregations.arrondissements.buckets.map(a => formatArrondissement(a)))
-    );
+      callback(
+        response.body.aggregations.arrondissements.buckets.map(a =>
+          formatArrondissement(a)
+        )
+      )
+    )
+    .catch(e => console.error(e));
 };
 
 // Trouver le top 5 des types et sous types d'anomalies
@@ -63,7 +68,8 @@ exports.statsByType = (client, callback) => {
           };
         })
       )
-    );
+    )
+    .catch(e => console.error(e));
 };
 
 // Trouver le top 10 des mois avec le plus d'anomalies
@@ -92,7 +98,8 @@ exports.statsByMonth = (client, callback) => {
           };
         })
       )
-    );
+    )
+    .catch(e => console.error(e));
 };
 
 // Trouver le top 3 des arrondissements avec le plus d'anomalies concernant la propreté
@@ -120,9 +127,13 @@ exports.statsPropreteByArrondissement = (client, callback) => {
       }
     })
     .then(response =>
-      callback(response.body.aggregations.arrondissements.buckets.map(a => formatArrondissement(a)))
+      callback(
+        response.body.aggregations.arrondissements.buckets.map(a =>
+          formatArrondissement(a)
+        )
+      )
     )
-    .catch(error => console.log(error.body.error));
+    .catch(error => console.error(error.body.error));
 };
 
 function formatArrondissement(a) {

@@ -21,7 +21,8 @@ exports.count = (client, from, to, callback) => {
       callback({
         count: resp.body.count
       })
-    );
+    )
+    .catch(e => console.error(e));
 };
 
 // Compter le nombre d'anomalies autour d'un point géographique, dans un rayon donné
@@ -52,5 +53,6 @@ exports.countAround = (client, lat, lon, radius, callback) => {
       callback({
         count: resp.body.hits.total.value
       });
-    });
+    })
+    .catch(e => console.error(e));
 };
