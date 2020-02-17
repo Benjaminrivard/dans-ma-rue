@@ -1,5 +1,12 @@
 # Dans Ma Rue
 
+## Groupe 
+GARCIA Cédric
+RIVARD Benjamin
+
+# Introduction
+
+
 L'objectif de cet exerice est d'analyser les données de l'application mobile `DansMaRue - Paris` avec `Elasticsearch`.
 
 `DansMaRue - Paris` est une application mobile permettant de transmettre les anomalies de la voie publique à Paris.
