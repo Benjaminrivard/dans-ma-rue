@@ -1,11 +1,13 @@
 # Dans Ma Rue
 
-## Groupe 
-GARCIA Cédric
-RIVARD Benjamin
+#### Groupe
+
+- Cédric GARCIA - FIL A3
+- Benjamin RIVARD - FIL A3
+
+#
 
 # Introduction
-
 
 L'objectif de cet exerice est d'analyser les données de l'application mobile `DansMaRue - Paris` avec `Elasticsearch`.
 

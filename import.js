@@ -5,28 +5,25 @@ const { Client } = require("@elastic/elasticsearch");
 const indexName = config.get("elasticsearch.index_name");
 
 async function run() {
-  // Create Elasticsearch client
+  // Crétion du client Elasticsearch
   const client = new Client({ node: config.get("elasticsearch.uri") });
 
   // Création de l'indice
-  client.indices.create({ index: indexName }, (err, resp) => {
-    if (err) {
-      console.trace(err.message);
-    } else {
-      client.indices.putMapping({
-        index: indexName,
-        body: {
-          properties: {
-            location: {
-              type: "geo_point"
-            }
-          }
+  await client.indices.create({ index: indexName });
+
+  // Ajout du mapping pour les coordonnées
+  await client.indices.putMapping({
+    index: indexName,
+    body: {
+      properties: {
+        location: {
+          type: "geo_point"
         }
-      });
+      }
     }
   });
 
-  // Read CSV file
+  // Lecture du fichier CSV
   const signalements = [];
   fs.createReadStream("dataset/dans-ma-rue.csv")
     .pipe(
@@ -70,7 +67,7 @@ async function sendBulkInsertQuery(client, signalements) {
   return new Promise(async (resolve, reject) => {
     while (signalements.length) {
       const { body: bulkResponse } = await client.bulk(
-        createBulkInsertQuery(signalements.splice(0, 20000))
+        createBulkInsertQuery(signalements.splice(0, 15000))
       );
       if (bulkResponse.errors) {
         reject();
